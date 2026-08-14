@@ -1,0 +1,413 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+
+  --color-spidey-red: var(--spidey-red);
+  --color-spidey-red-glow: var(--spidey-red-glow);
+  --color-spidey-blue: var(--spidey-blue);
+  --color-spidey-blue-glow: var(--spidey-blue-glow);
+
+  --color-primary: var(--spidey-red);
+  --color-primary-foreground: var(--foreground);
+
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-rajdhani), var(--font-poppins), sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 12px);
+}
+
+:root {
+  color-scheme: dark;
+  --background: oklch(0.16 0.02 265);
+  --foreground: oklch(0.97 0.01 265);
+  --card: oklch(0.21 0.025 265);
+  --card-foreground: oklch(0.97 0.01 265);
+  --muted: oklch(0.28 0.02 265);
+  --muted-foreground: oklch(0.72 0.02 265);
+  --border: oklch(1 0 0 / 10%);
+  --ring: oklch(0.6 0.2 25);
+
+  /* Spidey red #E23636 */
+  --spidey-red: oklch(0.61 0.2 24);
+  --spidey-red-glow: oklch(0.61 0.2 24 / 45%);
+  /* Deep blue #1B3E9C */
+  --spidey-blue: oklch(0.44 0.16 264);
+  --spidey-blue-glow: oklch(0.5 0.18 264 / 45%);
+
+  --radius: 1rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    cursor: none;
+  }
+  @media (max-width: 768px) {
+    body {
+      cursor: auto;
+    }
+  }
+}
+
+/* ---------- Background web-tech HUD lines ---------- */
+.web-grid-bg {
+  background-image:
+    radial-gradient(circle at 50% 0%, var(--spidey-red-glow), transparent 45%),
+    radial-gradient(circle at 0% 100%, var(--spidey-blue-glow), transparent 40%);
+  background-attachment: fixed;
+}
+
+/* ---------- Section reveal (bouncy pop-in) ---------- */
+.swing-in {
+  opacity: 0;
+  transform: translateY(48px) rotate(-1.6deg) scale(0.94);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.34, 1.8, 0.5, 1);
+  will-change: opacity, transform;
+}
+.swing-in.is-visible {
+  opacity: 1;
+  transform: translateY(0) rotate(0deg) scale(1);
+}
+
+/* headings that wiggle in when visible */
+.heading-pop {
+  display: inline-block;
+}
+.is-visible .heading-pop {
+  animation: headingPop 0.7s cubic-bezier(0.34, 1.7, 0.5, 1) both;
+}
+@keyframes headingPop {
+  0% { transform: scale(0.7) rotate(-4deg); opacity: 0; }
+  55% { transform: scale(1.08) rotate(2deg); opacity: 1; }
+  75% { transform: scale(0.97) rotate(-1deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* ---------- Glow card (chunky, wobbly, bouncy) ---------- */
+.glow-card {
+  position: relative;
+  background: linear-gradient(
+    160deg,
+    oklch(0.24 0.03 265) 0%,
+    oklch(0.19 0.025 265) 100%
+  );
+  border: 3px solid oklch(1 0 0 / 12%);
+  /* wobbly / uneven corners */
+  border-radius: 32px 26px 34px 24px / 26px 34px 24px 32px;
+  transition:
+    transform 0.28s cubic-bezier(0.34, 1.8, 0.5, 1),
+    box-shadow 0.28s ease,
+    border-color 0.28s ease;
+}
+.glow-card:hover {
+  transform: translateY(-8px) scale(1.04) rotate(-1deg);
+  border-color: var(--spidey-red);
+  box-shadow:
+    0 0 0 3px var(--spidey-red-glow),
+    0 18px 50px -10px var(--spidey-red-glow);
+}
+.glow-card:active {
+  transform: translateY(-2px) scale(0.97);
+}
+.glow-card-blue:hover {
+  border-color: var(--spidey-blue);
+  box-shadow:
+    0 0 0 3px var(--spidey-blue-glow),
+    0 18px 50px -10px var(--spidey-blue-glow);
+}
+
+/* ---------- Sticker cards (hobbies) ---------- */
+.sticker {
+  border-radius: 34px 28px 36px 26px / 28px 36px 26px 34px;
+  border: 4px solid var(--background);
+  outline: 3px solid currentColor;
+  transition:
+    transform 0.28s cubic-bezier(0.34, 2, 0.5, 1),
+    box-shadow 0.28s ease;
+}
+.sticker:hover {
+  transform: translateY(-10px) rotate(3deg) scale(1.06) !important;
+  box-shadow: 0 22px 50px -12px currentColor;
+}
+.sticker:active {
+  transform: scale(0.96) rotate(-1deg) !important;
+}
+
+/* ---------- Wiggle on hover (bigger + bouncier) ---------- */
+.wiggle-parent:hover .wiggle-target {
+  animation: wiggle 0.6s ease-in-out;
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  20% { transform: rotate(-16deg) scale(1.25); }
+  40% { transform: rotate(14deg) scale(1.25); }
+  60% { transform: rotate(-10deg) scale(1.15); }
+  80% { transform: rotate(6deg) scale(1.08); }
+}
+
+/* ---------- Spinning web reticle ---------- */
+.spin-slow {
+  animation: spin 3s linear infinite;
+}
+.spin-fast {
+  animation: spin 1.6s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Floating spider doodles (decorative) ---------- */
+.float-spider {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.18;
+  animation: floaty 6s ease-in-out infinite;
+}
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-14px) rotate(6deg); }
+}
+
+/* ---------- Crawling spiders along page edges ---------- */
+.crawler {
+  position: fixed;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0.35;
+}
+.crawler .legs {
+  animation: crawlWiggle 0.4s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+@keyframes crawlWiggle {
+  from { transform: rotate(-6deg); }
+  to { transform: rotate(6deg); }
+}
+.crawler-top {
+  top: 6px;
+  left: -5%;
+  animation: crawlX 34s linear infinite;
+}
+.crawler-bottom {
+  bottom: 6px;
+  right: -5%;
+  animation: crawlXReverse 40s linear infinite;
+}
+@keyframes crawlX {
+  from { transform: translateX(0); }
+  to { transform: translateX(110vw); }
+}
+@keyframes crawlXReverse {
+  from { transform: translateX(0); }
+  to { transform: translateX(-110vw); }
+}
+
+/* ---------- Dotted trail line ---------- */
+.dotted-trail {
+  height: 3px;
+  background-image: radial-gradient(circle, var(--spidey-red) 40%, transparent 42%);
+  background-size: 14px 3px;
+  background-repeat: repeat-x;
+  opacity: 0.5;
+}
+
+/* ---------- Animated web-strand connector between headers ---------- */
+.web-strand {
+  position: relative;
+  height: 2px;
+  overflow: visible;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--spidey-blue-glow),
+    transparent
+  );
+}
+.web-strand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 10px,
+    oklch(1 0 0 / 25%) 10px 12px
+  );
+  animation: strandFlow 2.6s linear infinite;
+}
+@keyframes strandFlow {
+  from { background-position: 0 0; }
+  to { background-position: 24px 0; }
+}
+
+/* ---------- "In Progress" bouncy badge ---------- */
+.badge-bounce {
+  animation: badgeBounce 1.4s ease-in-out infinite;
+}
+@keyframes badgeBounce {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-3px) rotate(2deg); }
+}
+
+/* ---------- 6...7 seesaw gag (meme) ---------- */
+.six-seven-wrap {
+  position: fixed;
+  z-index: 90;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(4rem, 20vw, 12rem);
+  pointer-events: none;
+  animation: fadeGag 2.4s ease forwards;
+}
+.six-seven-wrap .num6 {
+  color: var(--spidey-red);
+  text-shadow:
+    0 0 30px var(--spidey-red-glow),
+    0 0 70px var(--spidey-red-glow);
+  animation: seesawUp 0.42s cubic-bezier(0.34, 1.7, 0.5, 1) infinite alternate;
+}
+.six-seven-wrap .num7 {
+  color: var(--spidey-blue);
+  text-shadow:
+    0 0 30px var(--spidey-blue-glow),
+    0 0 70px var(--spidey-blue-glow);
+  animation: seesawDown 0.42s cubic-bezier(0.34, 1.7, 0.5, 1) infinite alternate;
+}
+@keyframes seesawUp {
+  from { transform: translateY(26px) rotate(-12deg); }
+  to { transform: translateY(-26px) rotate(12deg); }
+}
+@keyframes seesawDown {
+  from { transform: translateY(-26px) rotate(12deg); }
+  to { transform: translateY(26px) rotate(-12deg); }
+}
+@keyframes fadeGag {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  12% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  20% { transform: translate(-50%, -50%) scale(1); }
+  82% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+}
+
+/* ---------- Dropping spider ---------- */
+.spider-drop {
+  position: fixed;
+  top: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  animation: spiderDrop 3.2s ease-in-out forwards;
+}
+.spider-drop .thread {
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, oklch(1 0 0 / 55%));
+  height: 30vh;
+}
+@keyframes spiderDrop {
+  0% { transform: translateY(-30vh); }
+  40% { transform: translateY(4vh); }
+  55% { transform: translateY(-1vh); }
+  70% { transform: translateY(2vh); }
+  100% { transform: translateY(-30vh); }
+}
+
+/* ---------- Konami full-screen swing ---------- */
+.swing-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  overflow: hidden;
+}
+.swing-overlay .swinger {
+  position: absolute;
+  top: -10vh;
+  left: -20vw;
+  animation: bigSwing 1.8s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+}
+@keyframes bigSwing {
+  0% { transform: translate(0, 0) rotate(-30deg); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(140vw, 90vh) rotate(30deg); opacity: 0; }
+}
+.swing-overlay .swing-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 60vh;
+  background: linear-gradient(to bottom, oklch(1 0 0 / 70%), transparent);
+  transform-origin: top left;
+  animation: lineSwing 1.8s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+}
+@keyframes lineSwing {
+  0% { transform: rotate(-30deg) translate(-20vw, -10vh); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: rotate(30deg) translate(140vw, 30vh); opacity: 0; }
+}
+
+/* ---------- Custom cursor ---------- */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s ease-out;
+  mix-blend-mode: screen;
+}
+@media (max-width: 768px) {
+  .custom-cursor { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swing-in { opacity: 1; transform: none; transition: none; }
+  .is-visible .heading-pop { animation: none; }
+  .float-spider,
+  .crawler,
+  .badge-bounce,
+  .web-strand::before,
+  .spin-fast { animation: none; }
+}
+
+/* ---------- Web Shot (Background Click) ---------- */
+.animate-web-burst {
+  animation: webBurst 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+@keyframes webBurst {
+  0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.4) rotate(15deg); opacity: 0; }
+}
