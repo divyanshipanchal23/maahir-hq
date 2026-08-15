@@ -22,36 +22,57 @@ export function SiteEffects() {
   const [swing, setSwing] = useState(0)
   const [spiderKey, setSpiderKey] = useState(0)
 
-  /* custom cursor follow + thwip on click */
+  /* custom cursor follow + thwip on click with rAF */
+  const innerRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     const el = cursorRef.current
+    const inner = innerRef.current
     if (!el) return
+
+    let rafId: number | null = null
+    let latestX = -100
+    let latestY = -100
+
+    const updatePosition = () => {
+      el.style.transform = `translate3d(${latestX}px, ${latestY}px, 0)`
+      rafId = null
+    }
+
     const move = (e: MouseEvent) => {
-      el.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
+      latestX = e.clientX
+      latestY = e.clientY
+      if (!rafId) {
+        rafId = requestAnimationFrame(updatePosition)
+      }
     }
+
     const down = () => {
-      setPressed(true)
-      playThwip()
+      if (inner) inner.style.transform = 'translate(-50%, -50%) scale(0.75)'
     }
-    const up = () => setPressed(false)
-    window.addEventListener('mousemove', move)
+
+    const up = () => {
+      if (inner) inner.style.transform = 'translate(-50%, -50%) scale(1)'
+    }
+
+    window.addEventListener('mousemove', move, { passive: true })
     window.addEventListener('mousedown', down)
     window.addEventListener('mouseup', up)
     return () => {
+      if (rafId) cancelAnimationFrame(rafId)
       window.removeEventListener('mousemove', move)
       window.removeEventListener('mousedown', down)
       window.removeEventListener('mouseup', up)
     }
   }, [])
 
-  /* random dangling spider every 15-20s (with a thwip) */
+  /* random dangling spider every 15-20s */
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>
     const schedule = () => {
       const delay = 15000 + Math.random() * 5000
       timer = setTimeout(() => {
         setSpiderKey((k) => k + 1)
-        playThwip()
         schedule()
       }, delay)
     }
@@ -114,9 +135,10 @@ export function SiteEffects() {
       {/* custom cursor */}
       <div ref={cursorRef} className="custom-cursor" aria-hidden="true">
         <div
+          ref={innerRef}
           style={{
-            transform: `translate(-50%, -50%) scale(${pressed ? 0.7 : 1})`,
-            transition: 'transform 0.12s ease',
+            transform: 'translate(-50%, -50%) scale(1)',
+            transition: 'transform 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
           <CursorWeb />

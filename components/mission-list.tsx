@@ -72,9 +72,9 @@ export function MissionList() {
                     {/* spider bullet */}
                     <span className="relative flex size-11 shrink-0 items-center justify-center">
                       <SpiderBug
-                        className={`transition-all duration-200 ${
+                        className={`transition-[transform,color,filter] duration-200 cubic-bezier(0.16,1,0.3,1) active:scale-90 ${
                           isChecked
-                            ? 'size-11 text-spidey-red drop-shadow-[0_0_10px_var(--spidey-red-glow)]'
+                            ? 'size-11 text-spidey-red drop-shadow-[0_0_10px_var(--spidey-red-glow)] scale-110'
                             : m.status === 'progress'
                               ? 'size-9 text-spidey-blue'
                               : 'size-8 text-muted-foreground group-hover:scale-125 group-hover:text-foreground'

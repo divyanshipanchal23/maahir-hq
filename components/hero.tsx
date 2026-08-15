@@ -40,7 +40,7 @@ export function Hero() {
 
         {/* Right: pinned polaroid */}
         <div className="order-1 flex justify-center md:order-2">
-          <div className="relative rotate-[-4deg] transition-transform duration-500 hover:rotate-2 hover:scale-105">
+          <div className="relative rotate-[-4deg] transition-transform duration-200 ease-out sm:hover:rotate-2 sm:hover:scale-105">
             {/* tape corners */}
             <span className="absolute -left-4 -top-3 z-10 h-6 w-16 rotate-[-24deg] rounded-sm bg-white/25 backdrop-blur-sm" />
             <span className="absolute -right-4 -top-3 z-10 h-6 w-16 rotate-[24deg] rounded-sm bg-white/25 backdrop-blur-sm" />

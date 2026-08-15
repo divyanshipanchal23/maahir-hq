@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { SVGProps } from 'react'
 import { Reveal } from './reveal'
 import { SpiderBug } from './icons'
@@ -62,6 +62,16 @@ const hobbies = [
 export function Hobbies() {
   const [modalOpen, setModalOpen] = useState(false)
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setModalOpen(false)
+    }
+    if (modalOpen) {
+      window.addEventListener('keydown', onKey)
+    }
+    return () => window.removeEventListener('keydown', onKey)
+  }, [modalOpen])
+
   return (
     <section id="hobbies" className="relative px-5 py-20">
       {/* web strand connecting from the top */}
@@ -111,12 +121,17 @@ export function Hobbies() {
 
       {modalOpen && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200"
           onClick={() => setModalOpen(false)}
         >
-          <div className="relative max-w-sm rotate-2 rounded-md bg-white p-3 pb-16 shadow-2xl transition-transform hover:rotate-0" onClick={e => e.stopPropagation()}>
+          <div 
+            className="relative max-w-sm rotate-2 rounded-md bg-white p-3 pb-16 shadow-2xl transition-transform duration-200 hover:rotate-0 animate-in zoom-in-95 duration-200" 
+            onClick={e => e.stopPropagation()}
+          >
             <button 
-              className="absolute -right-4 -top-4 flex size-10 items-center justify-center rounded-full bg-spidey-red font-bold text-white shadow-lg transition-transform hover:scale-110"
+              type="button"
+              aria-label="Close modal"
+              className="absolute -right-4 -top-4 flex size-10 items-center justify-center rounded-full bg-spidey-red font-bold text-white shadow-lg transition-transform hover:scale-110 active:scale-95"
               onClick={() => setModalOpen(false)}
             >
               X

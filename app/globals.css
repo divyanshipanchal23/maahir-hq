@@ -79,13 +79,13 @@
   background-attachment: fixed;
 }
 
-/* ---------- Section reveal (bouncy pop-in) ---------- */
+/* ---------- Section reveal (smooth out-expo pop-in) ---------- */
 .swing-in {
   opacity: 0;
-  transform: translateY(48px) rotate(-1.6deg) scale(0.94);
+  transform: translateY(32px) rotate(-1deg) scale(0.96);
   transition:
-    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.85s cubic-bezier(0.34, 1.8, 0.5, 1);
+    opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 .swing-in.is-visible {
@@ -98,16 +98,15 @@
   display: inline-block;
 }
 .is-visible .heading-pop {
-  animation: headingPop 0.7s cubic-bezier(0.34, 1.7, 0.5, 1) both;
+  animation: headingPop 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 @keyframes headingPop {
-  0% { transform: scale(0.7) rotate(-4deg); opacity: 0; }
-  55% { transform: scale(1.08) rotate(2deg); opacity: 1; }
-  75% { transform: scale(0.97) rotate(-1deg); }
+  0% { transform: scale(0.92) rotate(-3deg); opacity: 0; }
+  60% { transform: scale(1.04) rotate(1.5deg); opacity: 1; }
   100% { transform: scale(1) rotate(0deg); }
 }
 
-/* ---------- Glow card (chunky, wobbly, bouncy) ---------- */
+/* ---------- Glow card (GPU-accelerated pseudo-element shadow ring) ---------- */
 .glow-card {
   position: relative;
   background: linear-gradient(
@@ -116,57 +115,89 @@
     oklch(0.19 0.025 265) 100%
   );
   border: 3px solid oklch(1 0 0 / 12%);
-  /* wobbly / uneven corners */
   border-radius: 32px 26px 34px 24px / 26px 34px 24px 32px;
   transition:
-    transform 0.28s cubic-bezier(0.34, 1.8, 0.5, 1),
-    box-shadow 0.28s ease,
-    border-color 0.28s ease;
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.22s ease;
+  will-change: transform;
 }
-.glow-card:hover {
-  transform: translateY(-8px) scale(1.04) rotate(-1deg);
-  border-color: var(--spidey-red);
+.glow-card::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
   box-shadow:
     0 0 0 3px var(--spidey-red-glow),
     0 18px 50px -10px var(--spidey-red-glow);
+  opacity: 0;
+  transition: opacity 0.22s ease-out;
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .glow-card:hover {
+    transform: translateY(-6px) scale(1.03) rotate(-1deg);
+    border-color: var(--spidey-red);
+  }
+  .glow-card:hover::after {
+    opacity: 1;
+  }
 }
 .glow-card:active {
-  transform: translateY(-2px) scale(0.97);
+  transform: translateY(-1px) scale(0.98);
 }
-.glow-card-blue:hover {
-  border-color: var(--spidey-blue);
+.glow-card-blue::after {
   box-shadow:
     0 0 0 3px var(--spidey-blue-glow),
     0 18px 50px -10px var(--spidey-blue-glow);
 }
+@media (hover: hover) and (pointer: fine) {
+  .glow-card-blue:hover {
+    border-color: var(--spidey-blue);
+  }
+}
 
 /* ---------- Sticker cards (hobbies) ---------- */
 .sticker {
+  position: relative;
   border-radius: 34px 28px 36px 26px / 28px 36px 26px 34px;
   border: 4px solid var(--background);
   outline: 3px solid currentColor;
-  transition:
-    transform 0.28s cubic-bezier(0.34, 2, 0.5, 1),
-    box-shadow 0.28s ease;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
-.sticker:hover {
-  transform: translateY(-10px) rotate(3deg) scale(1.06) !important;
+.sticker::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   box-shadow: 0 22px 50px -12px currentColor;
+  opacity: 0;
+  transition: opacity 0.22s ease-out;
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sticker:hover {
+    transform: translateY(-8px) rotate(2.5deg) scale(1.04) !important;
+  }
+  .sticker:hover::after {
+    opacity: 1;
+  }
 }
 .sticker:active {
-  transform: scale(0.96) rotate(-1deg) !important;
+  transform: scale(0.97) rotate(-1deg) !important;
 }
 
-/* ---------- Wiggle on hover (bigger + bouncier) ---------- */
-.wiggle-parent:hover .wiggle-target {
-  animation: wiggle 0.6s ease-in-out;
+/* ---------- Wiggle on hover ---------- */
+@media (hover: hover) and (pointer: fine) {
+  .wiggle-parent:hover .wiggle-target {
+    animation: wiggle 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
 }
 @keyframes wiggle {
   0%, 100% { transform: rotate(0deg) scale(1); }
-  20% { transform: rotate(-16deg) scale(1.25); }
-  40% { transform: rotate(14deg) scale(1.25); }
-  60% { transform: rotate(-10deg) scale(1.15); }
-  80% { transform: rotate(6deg) scale(1.08); }
+  25% { transform: rotate(-12deg) scale(1.15); }
+  50% { transform: rotate(10deg) scale(1.15); }
+  75% { transform: rotate(-5deg) scale(1.05); }
 }
 
 /* ---------- Spinning web reticle ---------- */
@@ -377,16 +408,15 @@
   100% { transform: rotate(30deg) translate(140vw, 30vh); opacity: 0; }
 }
 
-/* ---------- Custom cursor ---------- */
+/* ---------- Custom cursor (hardware accelerated, zero-lag) ---------- */
 .custom-cursor {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 9999;
   pointer-events: none;
-  transform: translate(-50%, -50%);
-  transition: transform 0.08s ease-out;
   mix-blend-mode: screen;
+  will-change: transform;
 }
 @media (max-width: 768px) {
   .custom-cursor { display: none; }
@@ -404,10 +434,20 @@
 
 /* ---------- Web Shot (Background Click) ---------- */
 .animate-web-burst {
-  animation: webBurst 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: webBurst 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @keyframes webBurst {
-  0% { transform: scale(0) rotate(-45deg); opacity: 0; }
-  50% { transform: scale(1.2) rotate(0deg); opacity: 1; }
-  100% { transform: scale(1.4) rotate(15deg); opacity: 0; }
+  0% { transform: scale(0.85) rotate(-20deg); opacity: 0; }
+  40% { transform: scale(1.15) rotate(0deg); opacity: 0.9; }
+  100% { transform: scale(1.35) rotate(10deg); opacity: 0; }
+}
+
+/* ---------- Error shake keyframes ---------- */
+.animate-shake {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
 }

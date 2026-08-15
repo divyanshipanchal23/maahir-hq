@@ -93,8 +93,8 @@ export function About() {
                   </div>
                   <div className="relative h-3 w-full overflow-hidden rounded-full bg-white/5">
                     <div 
-                      className={`absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ${s.blue ? 'bg-spidey-blue shadow-[0_0_10px_var(--spidey-blue-glow)]' : 'bg-spidey-red shadow-[0_0_10px_var(--spidey-red-glow)]'}`}
-                      style={{ width: '85%' }}
+                      className={`absolute inset-y-0 left-0 w-full origin-left rounded-full transition-transform duration-700 ease-out ${s.blue ? 'bg-spidey-blue shadow-[0_0_10px_var(--spidey-blue-glow)]' : 'bg-spidey-red shadow-[0_0_10px_var(--spidey-red-glow)]'}`}
+                      style={{ transform: 'scaleX(0.85)' }}
                     />
                   </div>
                   <p className="mt-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
