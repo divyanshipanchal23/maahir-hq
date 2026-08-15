@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SpiderMask, SpiderBug } from './icons'
-import { fireThwip } from './site-effects'
+import { playArrival } from '@/lib/sfx'
 
 export function EntryScreen({ children }: { children: React.ReactNode }) {
   const [unlocked, setUnlocked] = useState(false)
@@ -10,14 +10,27 @@ export function EntryScreen({ children }: { children: React.ReactNode }) {
   const [attempt, setAttempt] = useState('')
   const [error, setError] = useState(false)
   const [showHint, setShowHint] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem('maahir:unlocked') === '1') {
+        setUnlocked(true)
+      }
+    } catch {}
+    setMounted(true)
+  }, [])
 
   const checkAnswer = (e: React.FormEvent) => {
     e.preventDefault()
     const ans = attempt.toLowerCase().replace(/[^a-z]/g, '')
     if (ans === 'spiderman') {
-      fireThwip()
+      playArrival()
       setAnimatingOut(true)
-      setTimeout(() => setUnlocked(true), 1200) // wait for vault animation
+      try {
+        sessionStorage.setItem('maahir:unlocked', '1')
+      } catch {}
+      setTimeout(() => setUnlocked(true), 650) // wait for vault animation
     } else {
       setError(true)
       setShowHint(true)
@@ -25,7 +38,7 @@ export function EntryScreen({ children }: { children: React.ReactNode }) {
     }
   }
 
-  if (unlocked) {
+  if (unlocked || !mounted) {
     return <>{children}</>
   }
 
@@ -34,17 +47,17 @@ export function EntryScreen({ children }: { children: React.ReactNode }) {
       {children}
       <div className="fixed inset-0 z-[100] overflow-hidden pointer-events-none">
         {/* Left Vault Door */}
-        <div className={`absolute inset-y-0 left-0 w-1/2 bg-black transition-transform duration-1000 ease-in-out pointer-events-auto border-r-4 border-spidey-red/50 flex flex-col justify-center items-end ${animatingOut ? '-translate-x-full' : 'translate-x-0'}`}>
+        <div className={`absolute inset-y-0 left-0 w-1/2 bg-black transition-transform duration-650 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto border-r-4 border-spidey-red/50 flex flex-col justify-center items-end ${animatingOut ? '-translate-x-full' : 'translate-x-0'}`}>
            <div className="mr-1 h-16 w-4 rounded-l-md bg-spidey-red/50 opacity-50" />
         </div>
         
         {/* Right Vault Door */}
-        <div className={`absolute inset-y-0 right-0 w-1/2 bg-black transition-transform duration-1000 ease-in-out pointer-events-auto border-l-4 border-spidey-red/50 flex flex-col justify-center items-start ${animatingOut ? 'translate-x-full' : 'translate-x-0'}`}>
+        <div className={`absolute inset-y-0 right-0 w-1/2 bg-black transition-transform duration-650 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto border-l-4 border-spidey-red/50 flex flex-col justify-center items-start ${animatingOut ? 'translate-x-full' : 'translate-x-0'}`}>
            <div className="ml-1 h-16 w-4 rounded-r-md bg-spidey-red/50 opacity-50" />
         </div>
 
         {/* Content Overlay */}
-        <div className={`absolute inset-0 flex flex-col items-center justify-center p-5 text-center font-display transition-all duration-700 pointer-events-auto ${animatingOut ? 'scale-125 opacity-0' : 'scale-100 opacity-100'}`}>
+        <div className={`absolute inset-0 flex flex-col items-center justify-center p-5 text-center font-display transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto ${animatingOut ? 'scale-110 opacity-0' : 'scale-100 opacity-100'}`}>
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(229,9,20,0.15),transparent_70%)] pointer-events-none" />
           
           <div className="relative z-10 w-full max-w-md rounded-[32px] border-2 border-spidey-red/30 bg-black/40 p-8 shadow-[0_0_50px_-10px_var(--spidey-red-glow)] backdrop-blur-xl">

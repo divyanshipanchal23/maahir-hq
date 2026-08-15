@@ -2,23 +2,29 @@
 
 import { useEffect, useState } from 'react'
 import { BigWeb } from './icons'
+import { playWebShootSound } from '@/lib/sfx'
 
 export function WebShot() {
   const [webs, setWebs] = useState<{ id: number; x: number; y: number }[]>([])
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      // Don't trigger if clicking on interactive elements
+      // Don't trigger if clicking on interactive elements or cards
       const target = e.target as HTMLElement
       if (
         target.closest('button') ||
         target.closest('a') ||
         target.closest('input') ||
+        target.closest('textarea') ||
+        target.closest('select') ||
+        target.closest('[role="button"]') ||
         target.closest('.glow-card') ||
         target.closest('.sticker')
       ) {
         return
       }
+
+      playWebShootSound()
 
       const id = Date.now()
       setWebs((prev) => [...prev, { id, x: e.clientX, y: e.clientY }])
